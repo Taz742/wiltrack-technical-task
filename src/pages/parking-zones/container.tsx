@@ -14,10 +14,23 @@ import { Appbar } from "../../components/app-bar";
 import { SubmitHandler, useFieldArray, useForm } from "react-hook-form";
 import { AddOrEditZone } from "./add-or-edit-zone-popup";
 import { IPolygonFormData } from "./typs";
+import { Box, Modal } from "@mui/material";
 
 const containerStyle: React.CSSProperties = {
   width: "100%",
   height: "100%",
+};
+
+const style = {
+  position: "absolute" as "absolute",
+  top: "50%",
+  left: "50%",
+  transform: "translate(-50%, -50%)",
+  width: 400,
+  bgcolor: "background.paper",
+  border: "2px solid #000",
+  boxShadow: 24,
+  p: 4,
 };
 
 export const DrawPolygon = () => {
@@ -82,7 +95,7 @@ export const DrawPolygon = () => {
 
       const allPolygons = [...(fields as any)];
       allPolygons[index] = coordinates;
-      
+
       update(index, {
         ...controlledFields[index],
         coordinates: coordinates,
@@ -154,7 +167,7 @@ export const DrawPolygon = () => {
     }
   };
 
-  const handleFormSubmit: SubmitHandler<any> = async (data) => {};
+  const handleFormSubmit: SubmitHandler<IPolygonFormData> = async (data) => {};
 
   const infoWindowData =
     infoWindowDataIndex > -1 ? controlledFields[infoWindowDataIndex] : null;
@@ -162,6 +175,14 @@ export const DrawPolygon = () => {
   return (
     <Container>
       <Appbar title="Parking zones" />
+      <Modal
+        open={true}
+        onClose={() => {}}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        <Box sx={style}></Box>
+      </Modal>
       <MapContainer>
         <AddOrEditZone
           methods={methods}

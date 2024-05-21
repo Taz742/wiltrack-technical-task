@@ -5,18 +5,27 @@ import {
 } from "@mui/material";
 import FormInput from "../../../components/UI/form/form-input";
 import FormNumberInput from "../../../components/UI/form/form-number-input";
-import { FormProvider } from "react-hook-form";
+import { FormProvider, SubmitHandler } from "react-hook-form";
 import { Container, FieldContainer, FieldTitleContainer, FormContainer, ModalContentContainer, RemoveButton, RemoveIcon, SelectionId, StyledTypography } from "./styles";
+import { IPolygonFormData } from "../typs";
 
+interface IProps {
+  editing?: boolean;
+  methods: any;
+  fields: any[];
+  handleFormSubmit: SubmitHandler<IPolygonFormData>;
+  handleSelectionClick: (index: number) => void;
+  handleRemovePolygon: (index: number) => void;
+}
 
 export const AddOrEditZone = ({
   editing = false,
   methods,
-  handleFormSubmit,
   fields = [],
+  handleFormSubmit,
   handleSelectionClick,
   handleRemovePolygon,
-}: any) => {
+}: IProps) => {
   return (
     <Container>
       <StyledTypography variant="body2">Zone Form</StyledTypography>
