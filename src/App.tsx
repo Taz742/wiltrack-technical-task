@@ -1,7 +1,7 @@
 import { LoadScript } from "@react-google-maps/api";
 
 import { Loading } from "./components/loading";
-import { DrawPolygon } from "./pages/parking-zones";
+import { Routing } from "./router";
 
 const MAPS_API_KEY = process.env.REACT_APP_MAPS_API_KEY;
 
@@ -15,7 +15,7 @@ function App() {
       loadingElement={<Loading />}
       region="us"
     >
-      <DrawPolygon />
+      <Routing />
     </LoadScript>
   );
 }

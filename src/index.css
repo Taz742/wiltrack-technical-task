@@ -1,3 +1,57 @@
 body {
   margin: 0;
 }
+
+
+.pagination {
+  display: flex;
+  padding: 0 10px;
+}
+
+.pagination > li {
+  margin: 0 3px;
+  list-style: none;
+  border-radius: 10px;
+  padding: 7px 8px;
+  border: 1px solid rgba(24, 24, 24, 0.1);
+  background: #fff;
+  cursor: pointer;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 41px;
+}
+
+.pagination > li > a {
+  padding: 7px 16px;
+}
+
+.pagination > li.selected {
+  background-color: #4E342E;
+  color: #fff;
+  border: none;
+}
+
+.prave-page,
+.next-page {
+  margin-top: 5px;
+}
+
+.grecaptcha-badge {
+  visibility: hidden;
+}
+
+.css-tczb21-MuiButtonBase-root-MuiMenuItem-root .MuiListItemIcon-root {
+  min-width: 26px !important;
+}
+
+.MuiTooltip-popper {
+  z-index: 9999 !important;
+}
+
+.MuiTooltip-popper .MuiTooltip-tooltip {
+  padding-left: 18px !important;
+  padding-right: 18px !important;
+}

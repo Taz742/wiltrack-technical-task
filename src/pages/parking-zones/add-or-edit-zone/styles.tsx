@@ -76,7 +76,7 @@ export const FormContainer = styled(Box)`
 `;
 
 export const StyledTypography = styled(Typography)`
-  font-size: 16px;
+  font-size: 24px;
   font-weight: 700;
   margin-left: 20px !important;
   margin-bottom: 10px;
@@ -95,5 +95,5 @@ export const SelectionId = styled(Typography)`
 export const ModalContentContainer = styled(Box)`
   overflow: auto;
   padding: 20px;
-  height: calc(100% - 130px);
+  height: calc(100% - 160px);
 `;

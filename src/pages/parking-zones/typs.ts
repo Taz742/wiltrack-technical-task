@@ -6,6 +6,7 @@ interface ICoordinate {
 interface IPolygonData {
   subAreaId: string;
   subareaName: string;
+  capacity?: number;
   coordinates: ICoordinate[];
 }
 

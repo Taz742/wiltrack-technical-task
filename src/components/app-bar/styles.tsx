@@ -21,6 +21,6 @@ export const Title = styled(Typography)`
 `;
 
 export const NavButton = styled(Button)`
-  color: #FFF;
+  color: #D0B5AF;
   text-transform: capitalize;
 `;

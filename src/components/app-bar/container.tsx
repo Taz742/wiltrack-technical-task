@@ -4,8 +4,14 @@ import { Toolbar, Box } from "@mui/material";
 import { NavButton, StyledAppBar, Title } from "./styles";
 
 import Logo from "../../assets/images/logo.png";
+import { Link } from "react-router-dom";
 
-const navItems = ["Item 1", "Item 2"];
+const navItems = [
+  {
+    title: "Add Parking Zone",
+    to: "/add-zone",
+  },
+];
 
 interface IProps {
   title: string;
@@ -13,15 +19,19 @@ interface IProps {
   children?: React.ReactNode;
 }
 
-export const Appbar: React.FC<IProps> = ({ title, subTitle, children }) => {
+export const AppBar: React.FC<IProps> = ({ title, subTitle, children }) => {
   return (
     <StyledAppBar position="static">
       <Toolbar>
-        <img src={Logo} alt="" width={110} />
+        <Link to="/">
+          <img src={Logo} alt="" width={110} />
+        </Link>
         <Title variant="textMdBold">{title}</Title>
         <Box sx={{ display: { xs: "none", sm: "flex" }, ml: 8 }} columnGap={3}>
           {navItems.map((item) => (
-            <NavButton key={item}>{item}</NavButton>
+            <NavButton href={item.to} key={item.to}>
+              {item.title}
+            </NavButton>
           ))}
         </Box>
         {children}

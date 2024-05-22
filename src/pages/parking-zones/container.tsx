@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import {
   GoogleMap,
@@ -10,11 +10,16 @@ import {
 import { MapContainer, Container } from "./styles";
 
 import { polygonOptions, defaultCenter } from "./constants";
-import { Appbar } from "../../components/app-bar";
+import { AppBar } from "../../components/app-bar";
 import { SubmitHandler, useFieldArray, useForm } from "react-hook-form";
-import { AddOrEditZone } from "./add-or-edit-zone-popup";
+import { AddOrEditZone } from "./add-or-edit-zone";
 import { IPolygonFormData } from "./typs";
-import { Box, Modal } from "@mui/material";
+import { Box, Button, Modal, Typography, useMediaQuery } from "@mui/material";
+import useModal from "../../hooks/useModal";
+import resolver from "./resolver";
+import { useParams } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
+import axios from "axios";
 
 const containerStyle: React.CSSProperties = {
   width: "100%",
@@ -27,19 +32,37 @@ const style = {
   left: "50%",
   transform: "translate(-50%, -50%)",
   width: 400,
+  height: "calc(100vh - 100px)",
   bgcolor: "background.paper",
-  border: "2px solid #000",
+  borderRadius: 2,
   boxShadow: 24,
-  p: 4,
+  p: 1,
 };
 
-export const DrawPolygon = () => {
+export const ParkingZone = () => {
   const [infoWindowOpen, setInfoWindowOpen] = useState(false);
   const [infoWindowDataIndex, setInfoWindowDataIndex] = useState(-1);
+
+  const { isOpen, closeModal, openModal } = useModal();
 
   const [center, setCenter] = useState<google.maps.LatLngLiteral | undefined>(
     defaultCenter
   );
+
+  const hidden = useMediaQuery((theme: any) => theme.breakpoints.up("sm"));
+
+  const params = useParams();
+
+  const detailsQuery = useQuery({
+    queryKey: ["details", params.id],
+    enabled: !!params.id,
+    queryFn: async () =>
+      (
+        await axios.get(
+          `https://run.mocky.io/v3/72613afd-850e-4835-83bb-3ac328e7971d/${params.id}`
+        )
+      ).data,
+  });
 
   const mapRef = useRef();
   const polygonRefs = useRef<google.maps.Polygon[]>([]);
@@ -52,10 +75,11 @@ export const DrawPolygon = () => {
       fee: undefined,
       selections: [],
     },
+    resolver: resolver as any,
     mode: "all",
   });
 
-  const { control, watch } = methods;
+  const { control, setValue, watch } = methods;
 
   const { fields, append, remove, update } = useFieldArray({
     control,
@@ -69,6 +93,22 @@ export const DrawPolygon = () => {
       ...watchFieldArray[index],
     };
   });
+
+  useEffect(() => {
+    if (detailsQuery.isSuccess) {
+      setValue("name", detailsQuery.data.name);
+      setValue("fee", detailsQuery.data.fee);
+      setValue("selections", detailsQuery.data.selections);
+
+      const firstSelection = detailsQuery.data.selections[0];
+
+      if (firstSelection) {
+        if (firstSelection.coordinates[0]) {
+          setCenter(firstSelection.coordinates[0]);
+        }
+      }
+    }
+  }, [detailsQuery.isSuccess, detailsQuery.data, setValue]);
 
   const onPolygonClick = (index: number) => {
     setInfoWindowOpen(true);
@@ -141,6 +181,7 @@ export const DrawPolygon = () => {
       append({
         subAreaId: "",
         subareaName: "",
+        capacity: undefined,
         coordinates: newPolygon,
       });
 
@@ -167,30 +208,46 @@ export const DrawPolygon = () => {
     }
   };
 
-  const handleFormSubmit: SubmitHandler<IPolygonFormData> = async (data) => {};
+  const handleFormSubmit: SubmitHandler<IPolygonFormData> = async (data) => {
+    console.log(JSON.stringify(data));
+  };
 
   const infoWindowData =
     infoWindowDataIndex > -1 ? controlledFields[infoWindowDataIndex] : null;
 
   return (
     <Container>
-      <Appbar title="Parking zones" />
-      <Modal
-        open={true}
-        onClose={() => {}}
-        aria-labelledby="modal-modal-title"
-        aria-describedby="modal-modal-description"
-      >
-        <Box sx={style}></Box>
-      </Modal>
+      <AppBar title="Parking zones" />
+      {!hidden && (
+        <>
+          <Button onClick={openModal} variant="contained" sx={{ m: 4 }}>
+            Edit Details
+          </Button>
+          <Modal open={isOpen} onClose={closeModal}>
+            <Box sx={style}>
+              <AddOrEditZone
+                isInModal
+                methods={methods}
+                fields={fields}
+                handleFormSubmit={handleFormSubmit}
+                handleSelectionClick={onSelectionClick}
+                handleRemovePolygon={onRemovePolygon}
+              />
+            </Box>
+          </Modal>
+        </>
+      )}
       <MapContainer>
-        <AddOrEditZone
-          methods={methods}
-          fields={fields}
-          handleFormSubmit={handleFormSubmit}
-          handleSelectionClick={onSelectionClick}
-          handleRemovePolygon={onRemovePolygon}
-        />
+        {hidden && (
+          <AddOrEditZone
+            isInModal={false}
+            methods={methods}
+            fields={fields}
+            handleFormSubmit={handleFormSubmit}
+            handleSelectionClick={onSelectionClick}
+            handleRemovePolygon={onRemovePolygon}
+          />
+        )}
         <GoogleMap
           center={center}
           mapContainerStyle={containerStyle}
@@ -225,14 +282,14 @@ export const DrawPolygon = () => {
               }}
               onCloseClick={handleCloseInfoWindow}
             >
-              <div>
-                <p>
+              <Box display={"flex"} flexDirection={"column"}>
+                <Typography variant="caption">
                   <b>Subarea name:</b> {infoWindowData.subareaName}
-                </p>
-                <p>
+                </Typography>
+                <Typography variant="caption">
                   <b>Subarea ID:</b> {infoWindowData.subAreaId}
-                </p>
-              </div>
+                </Typography>
+              </Box>
             </InfoWindow>
           ) : null}
         </GoogleMap>
