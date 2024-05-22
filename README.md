@@ -12,6 +12,9 @@ The Parking Locator App is a small web application built with React.js that allo
 
 In the project directory, you can run:
 
+### `npm install`
+Installs all the necessary packages.
+
 ### `npm start`
 
 Runs the app in the development mode.\
