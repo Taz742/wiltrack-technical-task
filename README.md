@@ -6,7 +6,7 @@ The Parking Locator App is a small web application built with React.js that allo
 
 - **Google Maps Integration**: Utilizes the Google Maps API to display an interactive map interface.
 - **Parking Location Selections**: Allows users to add selections to the map to represent parking locations.
-- **Customization Options**: Users can customize the marker icons and labels for each parking location.
+- **Customization Options**: Users can customize the selections and labels for each parking location.
 
 ## Available Scripts
 
